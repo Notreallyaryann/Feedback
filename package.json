@@ -1,3 +1,4 @@
+
 {
   "name": "mystery-message",
   "version": "0.1.0",
@@ -6,9 +7,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
-    "test": "echo \"No tests to run\"",
-  }
+    "lint": "next lint",
+    "test": "echo \"No test specified\" && exit 0"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.3.3",
