@@ -10,6 +10,9 @@
     "lint": "next lint",
     "test": "echo \"No test specified\" && exit 0"
   },
+  "engines": {
+    "node": "20.x"
+  },
   "dependencies": {
     "@hookform/resolvers": "^3.3.3",
     "@radix-ui/react-alert-dialog": "^1.0.5",
