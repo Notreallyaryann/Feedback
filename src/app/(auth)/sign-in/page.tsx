@@ -55,9 +55,14 @@ export default function SignInForm() {
     }
 
     if (result?.url) {
-
       router.push('/dashboard');
     }
+  };
+
+  // Google SignIn handler
+  const handleGoogleSignIn = () => {
+    // Redirect is true by default for OAuth providers
+    signIn('google', { callbackUrl: '/dashboard' });
   };
 
   return (
@@ -69,6 +74,34 @@ export default function SignInForm() {
           </h1>
           <p className="mb-4">Sign in to continue your secret conversations</p>
         </div>
+
+        {/* Google Sign In */}
+        <Button
+          className="w-full bg-white text-gray-700 border border-gray-300 hover:bg-gray-100 flex items-center justify-center gap-2"
+          type="button"
+          onClick={handleGoogleSignIn}
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="18"
+            height="18"
+            viewBox="0 0 48 48"
+          >
+            <path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3c-1.6 4.7-6 8-11.3 8a12 12 0 1 1 0-24c3.1 0 5.9 1.1 8 3l5.7-5.7C34.6 6.3 29.6 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20c11.1 0 20-8.9 20-20 0-1.3-.1-2.3-.4-3.5z" />
+            <path fill="#FF3D00" d="M6.3 14.7l6.6 4.8A11.9 11.9 0 0 1 24 12c3.1 0 5.9 1.1 8 3l5.7-5.7C34.6 6.3 29.6 4 24 4c-7.4 0-13.8 3.6-17.7 9.2z" />
+            <path fill="#4CAF50" d="M24 44c5.4 0 10.3-1.8 14.1-5l-6.5-5.5A12 12 0 0 1 12 28.7l-6.6 5C9.9 39.6 16.5 44 24 44z" />
+            <path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3a12 12 0 0 1-20.4 3.7l-6.6 5C12.3 39.7 17.7 44 24 44c11.1 0 20-8.9 20-20 0-1.3-.1-2.3-.4-3.5z" />
+          </svg>
+          Sign in with Google
+        </Button>
+
+        <div className="flex items-center my-4">
+          <hr className="flex-grow border-gray-300" />
+          <span className="px-2 text-gray-500 text-sm">or</span>
+          <hr className="flex-grow border-gray-300" />
+        </div>
+
+        {/* Credentials Sign In */}
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             <FormField
@@ -93,9 +126,12 @@ export default function SignInForm() {
                 </FormItem>
               )}
             />
-            <Button className='w-full' type="submit">Sign In</Button>
+            <Button className="w-full" type="submit">
+              Sign In
+            </Button>
           </form>
         </Form>
+
         <div className="text-center mt-4">
           <p>
             Not a member yet?{' '}
@@ -108,3 +144,5 @@ export default function SignInForm() {
     </div>
   );
 }
+
+
