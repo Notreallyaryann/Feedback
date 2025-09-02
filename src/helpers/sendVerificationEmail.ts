@@ -46,10 +46,10 @@ export async function sendVerificationEmail(
 
   // Mail options
   const mailOptions = {
-    from: process.env.EMAIL_USER,  // Sender's email (from .env)
-    to: email,                    // Receiver's email
-    subject: 'Mystery Message Verification Code',  // Subject of the email
-    html: htmlContent,            // The HTML content created above
+    from: process.env.EMAIL_USER,  
+    to: email,                   
+    subject: 'Mystery Message Verification Code',
+    html: htmlContent,            
   };
 
   try {

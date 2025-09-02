@@ -55,7 +55,7 @@ export default function SignInForm() {
     }
 
     if (result?.url) {
-      // Use router.push for navigation to ensure proper redirection
+
       router.push('/dashboard');
     }
   };
