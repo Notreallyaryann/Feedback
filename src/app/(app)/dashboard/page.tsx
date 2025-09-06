@@ -16,31 +16,34 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { AcceptMessageSchema } from '@/schemas/acceptMessageSchema';
 
+interface AcceptMessagesForm {
+  acceptMessages: boolean;
+}
+
 function UserDashboard() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isSwitchLoading, setIsSwitchLoading] = useState(false);
 
   const { toast } = useToast();
-
-  const handleDeleteMessage = (messageId: string) => {
-    setMessages(messages.filter((message) => String(message._id) !== messageId));
-  };
-
   const { data: session } = useSession();
 
-  const form = useForm({
+  const form = useForm<AcceptMessagesForm>({
     resolver: zodResolver(AcceptMessageSchema),
   });
 
   const { register, watch, setValue } = form;
   const acceptMessages = watch('acceptMessages');
 
+  const handleDeleteMessage = (messageId: string) => {
+    setMessages(messages.filter((message) => message._id !== messageId));
+  };
+
   const fetchAcceptMessages = useCallback(async () => {
     setIsSwitchLoading(true);
     try {
       const response = await axios.get<ApiResponse>('/api/accept-messages');
-      setValue('acceptMessages', response.data.isAcceptingMessages);
+      setValue('acceptMessages', response.data.isAcceptingMessages ?? false);
     } catch (error) {
       const axiosError = error as AxiosError<ApiResponse>;
       toast({
@@ -58,7 +61,6 @@ function UserDashboard() {
   const fetchMessages = useCallback(
     async (refresh: boolean = false) => {
       setIsLoading(true);
-      setIsSwitchLoading(false);
       try {
         const response = await axios.get<ApiResponse>('/api/get-messages');
         setMessages(response.data.messages || []);
@@ -78,22 +80,20 @@ function UserDashboard() {
         });
       } finally {
         setIsLoading(false);
-        setIsSwitchLoading(false);
       }
     },
-    [setIsLoading, setMessages, toast]
+    [toast]
   );
 
-  // Fetch initial state from the server
   useEffect(() => {
     if (!session || !session.user) return;
 
     fetchMessages();
     fetchAcceptMessages();
-  }, [session, setValue, toast, fetchAcceptMessages, fetchMessages]);
+  }, [session, fetchMessages, fetchAcceptMessages]);
 
-  // Handle switch change
   const handleSwitchChange = async () => {
+    setIsSwitchLoading(true);
     try {
       const response = await axios.post<ApiResponse>('/api/accept-messages', {
         acceptMessages: !acceptMessages,
@@ -112,15 +112,14 @@ function UserDashboard() {
           'Failed to update message settings',
         variant: 'destructive',
       });
+    } finally {
+      setIsSwitchLoading(false);
     }
   };
 
-  if (!session || !session.user) {
-    return <div></div>;
-  }
+  if (!session || !session.user) return <div></div>;
 
   const { username } = session.user as User;
-
   const baseUrl = `${window.location.protocol}//${window.location.host}`;
   const profileUrl = `${baseUrl}/u/${username}`;
 
@@ -149,7 +148,7 @@ function UserDashboard() {
         </div>
       </div>
 
-      <div className="mb-4">
+      <div className="mb-4 flex items-center">
         <Switch
           {...register('acceptMessages')}
           checked={acceptMessages}
@@ -181,7 +180,7 @@ function UserDashboard() {
         {messages.length > 0 ? (
           messages.map((message) => (
             <MessageCard
-              key={String(message._id)} 
+              key={message._id as string} 
               message={message}
               onMessageDelete={handleDeleteMessage}
             />
@@ -195,4 +194,5 @@ function UserDashboard() {
 }
 
 export default UserDashboard;
+
 
